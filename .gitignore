@@ -1,0 +1,23 @@
+# macOS and editor metadata
+.DS_Store
+**/.DS_Store
+.idea/
+.vscode/
+*~
+
+# Lean / Lake build products
+.lake/
+**/.lake/
+*.olean
+*.ilean
+*.trace
+
+# Coq / Dune build products
+_build/
+**/_build/
+*.aux
+*.glob
+*.vo
+*.vos
+*.vok
+.lia.cache
