@@ -44,35 +44,35 @@ end Agent
 
 notation:max "A#(" n ")" => Agent.type n
 
-def Social_Welfare_Function (act O : Type) := act ^ n → Pred O
+def Social_Welfare_Function {act : Type} {O : Type} := act ^ n → Pred O
 
 local notation "SWF" => Social_Welfare_Function
 
-def Tie_Break (O : Type) := Pred O → O
+def Tie_Break {O : Type} := Pred O → O
 
 local notation "TB" => Tie_Break
 
 namespace Mech
 
-structure type (act : Type) (n : ℕ) where
+structure type {act : Type} (n : ℕ) where
  O : Type
  M : act ^ n -> O
 
 instance {act : Type} {n : ℕ} :
-    CoeFun (type act n) (fun mech => act ^ n → mech.O) where
+    CoeFun (type (act := act) n) (fun mech => act ^ n → mech.O) where
   coe mech := mech.M
 
 end Mech
 
 namespace Mech_with_break
 
-structure type (act : Type) (n : ℕ) where
+structure type {act : Type} (n : ℕ) where
   O : Type
-  swf : Social_Welfare_Function n act O
-  tb : Tie_Break O
+  swf : @Social_Welfare_Function n act O
+  tb : @Tie_Break O
 
-def toMech {act : Type} {n : ℕ} (m : type act n) :
-    Mech.type act n where
+def toMech {act : Type} {n : ℕ} (m : type (act := act) n) :
+    Mech.type (act := act) n where
   O := m.O
   M := fun t ↦ m.tb (m.swf t)
 
@@ -82,9 +82,9 @@ namespace Prefs
 
 section Prefs
 
-variable {act : Type} {n : ℕ}
+variable (act : Type)
 
-local notation "M" => Mech.type act n
+local notation "M" => @Mech.type act n
 
 local notation "Strategy" => A#(n) -> act
 
@@ -98,13 +98,34 @@ end Prefs
 
 end Prefs
 
+section DsIC
+
+variable (act : Type)
+
+variable (m : @Mech.type act n)
+
+variable (p : Prefs.type n act m)
+
+local notation "profile" => act ^ n
+
+def differ_on (π π' : profile) (a : A#(n)) : Prop :=
+  ∀ a', a' ≠ a → π' _{a'} = π _{a'}
+
+def truthful' (π π' : profile) (a : A#(n)) : Prop :=
+  differ_on n act π π' a → π _{a} = p.V a → p.U a (m π') ≤ p.U a (m π)
+
+def truthful : Prop :=
+  ∀ π π' (a : A#(n)), truthful' n act m p π π' a
+
+end DsIC
+
 namespace Single_Item_Auction
 
 def Base (n : ℕ) : Bool → Type 1
-  | true => Mech_with_break.type B n
-  | false => Mech.type B n
+  | true => Mech_with_break.type (act := B) n
+  | false => Mech.type (act := B) n
 
-def toMech : (br : Bool) → Base n br → Mech.type B n
+def toMech : (br : Bool) → Base n br → Mech.type (act := B) n
   | true, m => Mech_with_break.toMech m
   | false, m => m
 
@@ -127,32 +148,9 @@ def U (ai : A#(n)) (o : (toMech n br auction.base).O) : ℕ :=
   | some p => v ai - p
   | none => 0
 
-def prefs : Prefs.type (toMech n br auction.base) where
+def prefs : Prefs.type (act := B) n (toMech n br auction.base) where
   V := v
   U := U n auction v
   T := v
 
 end Single_Item_Auction
-
-/- user interface, for defining an auction -/
-section SP
-
-variable (n : ℕ)
-
-variable (α : A#(n))
-
-variable (α : A#(n) ^ n)
-
-variable (i : Fin n)
-
-#check α _{-i}
-
-#check α _{<i}
-
-#check α _{>i}
-
-#check α _{i}
-
-#check Mech.type
-
-end SP
