@@ -1,7 +1,9 @@
 # Formech
 
-Formech is a small Lean 4 staging repository for formalizing mechanism design.
-Reusable definitions and theorems are intended to move into
+Formech began as a small "baby project" built during a summer school at
+Shanghai Jiao Tong University (SJTU). It uses Lean 4 to explore the
+formalization of mechanism design and now serves as a lightweight staging
+repository. Reusable definitions and theorems are intended to move into
 [EconCSlib](https://github.com/gametheoryinlean/EconCSLib) after their
 interfaces stabilize.
 
