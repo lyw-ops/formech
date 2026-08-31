@@ -1,8 +1,0 @@
-(coq.theory
- (package coq-mech)
- (name mech.lib)
- (flags
-   :standard
-   -w -notation-overridden
-   -w -local-declaration
-   -w -ambiguous-paths))

@@ -9,19 +9,17 @@ prototype. Stable abstractions are expected to move into EconCSlib. Optimize for
 correct semantics, small reusable interfaces, and easy migration rather than for
 a large Formech-specific framework.
 
+The repository is intentionally Lean-only: do not add historical implementations
+in other proof assistants, vendored course collections, unrelated binaries, or
+generated build products.
+
 ## Read first
 
 Before proposing or making changes, inspect:
 
 1. `README.md`;
 2. `lean/formech.lean`;
-3. `lean/single_item_fixed_price.lean`;
-4. any directly relevant file under `lean/notes/`;
-5. the corresponding `coq/` module only when historical comparison is useful.
-
-The files under `lean/SJTU_AI4Math/` are supporting course/reference material,
-not part of the Formech Lake library. Do not use their intentional `sorry`s to
-assess the status of the Formech core.
+3. `lean/single_item_fixed_price.lean`.
 
 ## Validation
 
@@ -35,10 +33,6 @@ lake build
 
 The final validation for Lean source changes is `lake build`. Do not update the
 toolchain or run `lake update` as an incidental fix.
-
-The Coq development requires its own historical toolchain. If Coq, Dune, or opam
-is unavailable, report that limitation rather than claiming the Coq tree was
-validated.
 
 ## Design constraints
 
@@ -58,19 +52,20 @@ validated.
 
 ## Repository boundaries
 
-- `lean/` is the active implementation.
-- `coq/` is imported reference material derived from `jouvelot/mech.v`; preserve
-  its authorship and license notices.
-- Preserve `lean/LICENSE` and the attribution of imported Lean material.
-- Do not silently rewrite third-party headers or represent the whole repository
-  as having one uniform license. See `THIRD_PARTY_NOTICES.md`.
+- `lean/` is the active implementation and the Lake package root.
+- Keep only source files used by the package and files required to resolve and
+  pin its Lean dependencies.
+- Preserve the root `LICENSE`, `lean/LICENSE`, and applicable attribution in
+  `THIRD_PARTY_NOTICES.md`.
+- Do not commit `.lake/`, generated object files, editor state, or downloaded
+  reference material.
 
 ## Change discipline
 
-- Keep edits focused and avoid modifying course/reference files unless asked.
+- Keep edits focused.
 - Add assertions or theorem examples rather than relying only on raw `#eval`
   output when behavior is intended as a regression check.
 - Document any finite bounds used by exhaustive verification; never present a
   bounded result as a theorem over arbitrary agents or action spaces.
-- Update `README.md` when the canonical build, project status, or migration plan
-  materially changes.
+- Update `README.md` when the canonical build, project status, dependencies, or
+  migration plan materially changes.

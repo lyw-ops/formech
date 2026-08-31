@@ -11,13 +11,3 @@
 *.olean
 *.ilean
 *.trace
-
-# Coq / Dune build products
-_build/
-**/_build/
-*.aux
-*.glob
-*.vo
-*.vos
-*.vok
-.lia.cache
